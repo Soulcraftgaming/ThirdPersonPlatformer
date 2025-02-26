@@ -1,63 +1,44 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    public Rigidbody capsuleRigidbody;
-    public float moveSpeed = 5f;  // Increase speed slightly for better control
-    public float jumpPower = 5f; 
-    public bool isGrounded = false;
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private float speed = 5f;
+    [SerializeField] private float jumpForce = 5f;
+
+    private Rigidbody rb;
+    private bool isGrounded = true;  // Track if the player is on the ground
 
     void Start()
     {
-        // Ensuring Rigidbody constraints to prevent tipping
-        capsuleRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb = GetComponent<Rigidbody>();
+
+        // Subscribe to input events
+        inputManager.OnMove.AddListener(MovePlayer);
+        inputManager.OnJumpPressed.AddListener(Jump);
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void MovePlayer(Vector2 direction)
+    {
+        Vector3 moveDirection = new Vector3(direction.x, 0f, direction.y);
+        rb.AddForce(moveDirection * speed, ForceMode.Force);
+    }
+
+    private void Jump()
+    {
+        if (isGrounded) // Prevent double jumps
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false; // Mark player as airborne
+        }
+    }
+
+    // Detect when the player touches the ground again
+    private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
         }
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
-    }
-
-    void Update()
-    {
-        Vector3 moveDirection = Vector3.zero;
-
-        if (Input.GetKey(KeyCode.W)) {
-            moveDirection += Vector3.forward;
-        }
-        
-        if (Input.GetKey(KeyCode.A)){
-            moveDirection += Vector3.left;
-        }
-        
-        if (Input.GetKey(KeyCode.S))
-        {
-            moveDirection += Vector3.back;
-        }
-        
-        
-        if (Input.GetKey(KeyCode.D)) 
-        {
-            moveDirection += Vector3.right;
-        } 
-
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            capsuleRigidbody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-        }
-
-        // Moving the capsule
-        capsuleRigidbody.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Acceleration);
     }
 }
