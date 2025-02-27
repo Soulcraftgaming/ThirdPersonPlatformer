@@ -7,6 +7,15 @@ public class InputManager : MonoBehaviour
     public UnityEvent OnJumpPressed = new UnityEvent();
     public Transform cameraTransform; // Reference to the camera transform
 
+    private int jumpCount = 0;
+    private const int maxJumps = 2;
+    public UnityEvent OnLand = new UnityEvent(); // Event triggered when landing
+
+    void Start()
+    {
+        OnLand.AddListener(ResetJumpCount);
+    }
+
     void Update()
     {
         // Handle movement input
@@ -43,10 +52,24 @@ public class InputManager : MonoBehaviour
         // Convert to Vector2 before invoking
         OnMove?.Invoke(new Vector2(moveDirection.x, moveDirection.z));
 
-        // Handle jump input
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Handle jump input with double jump logic
+        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
+            jumpCount++;
             OnJumpPressed?.Invoke();
         }
+    }
+
+    // Resets the jump count when the player lands
+    private void ResetJumpCount()
+    {
+        jumpCount = 0;
+    }
+
+    // Public method to reset jump count when landing
+    public void NotifyLanding()
+    {
+        ResetJumpCount();
+        OnLand?.Invoke();
     }
 }

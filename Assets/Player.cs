@@ -41,8 +41,6 @@ public class Player : MonoBehaviour
         inputManager.OnJumpPressed.AddListener(Jump);
     }
 
-
-
     private void MovePlayer(Vector2 direction)
     {
         if (direction.magnitude == 0) return; // No movement if no input
@@ -65,7 +63,7 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
-        if (isGrounded)
+        if (inputManager != null)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
@@ -77,6 +75,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            inputManager.NotifyLanding(); // Reset jump count when touching the ground
         }
     }
 }
