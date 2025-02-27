@@ -1,20 +1,25 @@
 using UnityEngine;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float dashForce = 10f;
+    [SerializeField] private float dashDuration = 0.2f;
+    [SerializeField] private float dashCooldown = 3f;
 
     private Rigidbody rb;
     private bool isGrounded = true;
+    private bool canDash = true;
+    private bool isDashing = false;
     private Transform cameraTransform;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
-        // Get the main camera transform safely
         Camera cam = Camera.main ?? FindFirstObjectByType<Camera>();
         if (cam != null)
         {
@@ -25,7 +30,6 @@ public class Player : MonoBehaviour
             Debug.LogError("No Camera found in the scene! Make sure there is a camera tagged as 'MainCamera'.");
         }
 
-        // Ensure InputManager is assigned
         if (inputManager == null)
         {
             inputManager = FindFirstObjectByType<InputManager>();
@@ -36,16 +40,16 @@ public class Player : MonoBehaviour
             }
         }
 
-        // Subscribe to input events
         inputManager.OnMove.AddListener(MovePlayer);
         inputManager.OnJumpPressed.AddListener(Jump);
+        inputManager.OnDash.AddListener(Dash);
     }
 
     private void MovePlayer(Vector2 direction)
     {
-        if (direction.magnitude == 0) return; // No movement if no input
+        if (isDashing) return; // Prevent movement while dashing
+        if (direction.magnitude == 0) return; 
 
-        // Get the camera's forward and right vectors, but ignore the Y-axis
         Vector3 cameraForward = cameraTransform.forward;
         Vector3 cameraRight = cameraTransform.right;
         cameraForward.y = 0;
@@ -53,21 +57,45 @@ public class Player : MonoBehaviour
         cameraForward.Normalize();
         cameraRight.Normalize();
 
-        // Convert input direction to world space relative to the camera
         Vector3 moveDirection = (cameraForward * direction.y + cameraRight * direction.x).normalized;
-
-        // Apply force for movement while keeping Y-axis velocity unchanged
         Vector3 velocity = new Vector3(moveDirection.x * speed, rb.linearVelocity.y, moveDirection.z * speed);
         rb.linearVelocity = velocity;
     }
 
     private void Jump()
     {
-        if (inputManager != null)
+        if (isGrounded || inputManager.OnLand.GetPersistentEventCount() < 2) // Allow double jump
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
             isGrounded = false;
         }
+    }
+
+    private void Dash()
+    {
+        if (canDash && !isDashing)
+        {
+            StartCoroutine(DashCoroutine());
+        }
+    }
+
+    private IEnumerator DashCoroutine()
+    {
+        canDash = false;
+        isDashing = true;
+
+        Vector3 dashDirection = cameraTransform.forward;
+        dashDirection.y = 0;
+        dashDirection.Normalize();
+
+        rb.linearVelocity = dashDirection * dashForce;
+
+        yield return new WaitForSeconds(dashDuration);
+
+        isDashing = false;
+
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -75,7 +103,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            inputManager.NotifyLanding(); // Reset jump count when touching the ground
+            inputManager.NotifyLanding();
         }
     }
 }

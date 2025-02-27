@@ -5,7 +5,8 @@ public class InputManager : MonoBehaviour
 {
     public UnityEvent<Vector2> OnMove = new UnityEvent<Vector2>();
     public UnityEvent OnJumpPressed = new UnityEvent();
-    public Transform cameraTransform; // Reference to the camera transform
+    public UnityEvent OnDash = new UnityEvent();
+    public Transform cameraTransform;
 
     private int jumpCount = 0;
     private const int maxJumps = 2;
@@ -33,15 +34,12 @@ public class InputManager : MonoBehaviour
         Vector3 moveDirection = Vector3.zero;
         if (cameraTransform != null)
         {
-            // Get camera forward and right vectors relative to the horizontal plane
             Vector3 forward = cameraTransform.forward;
             Vector3 right = cameraTransform.right;
             forward.y = 0; // Ignore vertical tilt
             right.y = 0;
             forward.Normalize();
             right.Normalize();
-
-            // Rotate input direction based on camera orientation
             moveDirection = (forward * input.y + right * input.x).normalized;
         }
         else
@@ -52,21 +50,25 @@ public class InputManager : MonoBehaviour
         // Convert to Vector2 before invoking
         OnMove?.Invoke(new Vector2(moveDirection.x, moveDirection.z));
 
-        // Handle jump input with double jump logic
+        // Handle jump input
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
             jumpCount++;
             OnJumpPressed?.Invoke();
         }
+
+        // Handle dash input
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            OnDash?.Invoke();
+        }
     }
 
-    // Resets the jump count when the player lands
     private void ResetJumpCount()
     {
         jumpCount = 0;
     }
 
-    // Public method to reset jump count when landing
     public void NotifyLanding()
     {
         ResetJumpCount();

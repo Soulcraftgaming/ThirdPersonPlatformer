@@ -682,6 +682,9 @@ MonoBehaviour:
   OnJumpPressed:
     m_PersistentCalls:
       m_Calls: []
+  OnDash:
+    m_PersistentCalls:
+      m_Calls: []
   cameraTransform: {fileID: 0}
   OnLand:
     m_PersistentCalls:
@@ -857,7 +860,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputManager: {fileID: 0}
   speed: 5
-  jumpForce: 22
+  jumpForce: 13
+  dashForce: 50
+  dashDuration: 0.2
+  dashCooldown: 3
 --- !u!54 &541560776
 Rigidbody:
   m_ObjectHideFlags: 0
