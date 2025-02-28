@@ -100,10 +100,19 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Player Ground Collision
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
             inputManager.NotifyLanding();
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
+        {
+            GameManager.Instance.AddScore(1);
+            Destroy(other.gameObject);
         }
     }
 }
