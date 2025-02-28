@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Platform
+  - Coin
   layers:
   - Default
   - TransparentFX
