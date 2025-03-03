@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            
         }
         else
         {
@@ -28,8 +29,15 @@ public class GameManager : MonoBehaviour
     {
         score += amount;
 
+        
+
         //show updated score on GUI
-        scoreText.text = $"Score: {score}"; 
+        scoreText.text = $"Score: {score}";
+        
+        //show the player collected all coins 
+        if (score == 32) {
+            scoreText.color = Color.green; 
+        }
     }
 
     public int GetScore()
