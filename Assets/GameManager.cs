@@ -1,11 +1,16 @@
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    //Fields to adjust in Inspector
     [SerializeField] private int score = 0;
+    [SerializeField] private TextMeshProUGUI scoreText;
 
-    //GameManager Singleton
+
+    //GameManager Singleton - used to initalize GameObject
     public static GameManager Instance { get; private set; }
+
 
     private void Awake()
     {
@@ -22,7 +27,9 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
-        Debug.Log("Score: " + score);
+
+        //show updated score on GUI
+        scoreText.text = $"Score: {score}"; 
     }
 
     public int GetScore()
