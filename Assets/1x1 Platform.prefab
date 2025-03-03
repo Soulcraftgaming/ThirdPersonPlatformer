@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 723944227048111069, guid: b8b417961390eb84a94a8f8ee7bc139a, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 863b984630b4718469bd6a4894f04465, type: 2}
     - target: {fileID: 783440590717978776, guid: b8b417961390eb84a94a8f8ee7bc139a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -62,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3029316500950028722, guid: b8b417961390eb84a94a8f8ee7bc139a, type: 3}
       propertyPath: m_Name
-      value: Platform (2) Variant (4) Variant
+      value: 1x1 Platform
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

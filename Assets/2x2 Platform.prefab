@@ -10,8 +10,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1105149449745693238, guid: 6e961458fe76b2b4abdee14a41c2e7b3, type: 3}
       propertyPath: m_Name
-      value: Platform (2) Variant
+      value: 2x2 Platform
       objectReference: {fileID: 0}
+    - target: {fileID: 3411471973185867865, guid: 6e961458fe76b2b4abdee14a41c2e7b3, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 863b984630b4718469bd6a4894f04465, type: 2}
     - target: {fileID: 3423681082200580892, guid: 6e961458fe76b2b4abdee14a41c2e7b3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
