@@ -17,6 +17,8 @@ Here is the video link: https://youtu.be/QixWzC5P3Pw
 
 •	Dash Feature (Press E to dash. Note: has 2 second cooldown to prevent abuse)
 
+•	Secret for collecting all coins!
+
 # Controls 
 
 •	Look Around with the Mouse
